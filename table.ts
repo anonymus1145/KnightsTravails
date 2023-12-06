@@ -17,15 +17,11 @@ function displayChessBoard(board: any[][]): void {
     }
   }
 
-  const initialPosition = {row: 0, colomn: 0};
-  const finalPosition = {row: 0, colomn: 7};
+  const initialPosition = {row: 0, column: 0};
+  const finalPosition = {row: 7, column: 2};
 
   let firstKnight = createKnight(initialPosition, table);
   firstKnight.addKnight();
-  displayChessBoard(table);
-  console.log('/n');
 
   firstKnight.moveKnight(initialPosition, finalPosition);
   displayChessBoard(table);
-
-  // 
