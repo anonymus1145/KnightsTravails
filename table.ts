@@ -17,7 +17,7 @@ function displayChessBoard(board: any[][]): void {
     }
   }
 
-  const initialPosition = {row: 0, column: 0};
+  const initialPosition = {row: 2, column: 2};
   const finalPosition = {row: 7, column: 2};
 
   let firstKnight = createKnight(initialPosition, table);

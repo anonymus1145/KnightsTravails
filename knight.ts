@@ -28,55 +28,38 @@ export default function createKnight(
       const { row: fromRow, column: fromColumn } = from;
       const { row: toRow, column: toColumn } = to;
       
-      if (findBestMove(from, to) === false) {
-        console.log("Invalid move");
-      } else {
-        table[toRow][toColumn] = "k";
-        table[fromRow][fromColumn] = 0;
-      }
+      let moves =findPossibleMoves(table, fromRow, fromColumn);
+      console.log(moves);
     },
   };
 }
 
-function isValidPosition(row: number, column: number): boolean {
-  return row >= 0 && row < 8 && column >= 0 && column < 8;
-}
+      
+// To calculate possible moves
+let n = 4;
+let m = 4;
 
-function isValidMove(from: Position, to: Position): boolean {
-  const { row: fromRow, column: fromColumn } = from;
-  const { row: toRow, column: toColumn } = to;
-  const rowDiff = Math.abs(fromRow - toRow);
-  const columnDiff = Math.abs(fromColumn - toColumn);
-  return (
-    (rowDiff === 2 && columnDiff === 1) || (rowDiff === 1 && columnDiff === 2)
-  );
-}
+function findPossibleMoves(table: any[][], p: number, q: number)
+{
+    // All possible moves of a knight
+    let X = [ 2, 1, -1, -2, -2, -1, 1, 2 ];
+    let Y = [ 1, 2, 2, 1, -1, -2, -2, -1 ];
 
-function findBestMove(from: Position, to: Position): boolean {
-  let { row: fromRow, column: fromColumn } = from;
-  let { row: toRow, column: toColumn } = to;
-  let nextPosition: Position = { row: fromRow, column: fromColumn };
+    let count = 0;
 
-  if (
-    isValidPosition(fromRow, fromColumn) && isValidPosition(toRow, toColumn)) {
+    // Check if each possible move is valid or not
+    for (let i = 0; i < 8; i++) {
 
-      console.log([fromRow, fromColumn]);
+        // Position of knight after move
+        let x = p + X[i];
+        let y = q + Y[i];
 
-    while (nextPosition.row !== toRow || nextPosition.column !== toColumn) {
-
-       console.log([nextPosition.row, nextPosition.column]);
-
-       // Placeholder logic: Move one step closer to the target in the row direction
-       nextPosition.row += (toRow - nextPosition.row > 0) ? 1 : (toRow - nextPosition.row < 0) ? -1 : 0;
-
-       // Placeholder logic: Move one step closer to the target in the column direction
-       nextPosition.column += (toColumn - nextPosition.column > 0) ? 1 : (toColumn - nextPosition.column < 0) ? -1 : 0;
-
-      isValidMove({ row: fromRow, column: fromColumn }, nextPosition);
-      fromRow = nextPosition.row;
-      fromColumn = nextPosition.column;
+        // count valid moves
+        if (x >= 0 && y >= 0 && x < n && y < m && table[x][y] == 0)
+            count++;
+            table[x][y] = 1;
     }
-    return true;
-  }
-  return false;
+
+    // Return number of possible moves
+    return count;
 }
