@@ -24,42 +24,114 @@ export default function createKnight(
         console.log("Invalid position");
       }
     },
-    moveKnight: function (from: Position, to: Position) {
-      const { row: fromRow, column: fromColumn } = from;
-      const { row: toRow, column: toColumn } = to;
-      
-      let moves =findPossibleMoves(table, fromRow, fromColumn);
-      console.log(moves);
+    moveKnight: function (start: Position, target: Position) {
+      let path = shortestPath(
+        [start.row, start.column],
+        [target.row, target.column]
+      );
+
+      console.log('Here is your path:');
+
+      path!.forEach(element => {
+        console.log(element);
+      });
     },
   };
 }
 
-      
-// To calculate possible moves
-let n = 4;
-let m = 4;
+// Check if a move is between 0 and 7
+function isValidMove(x: number, y: number): boolean {
+  return x >= 0 && x < 8 && y >= 0 && y < 8;
+}
 
-function findPossibleMoves(table: any[][], p: number, q: number)
-{
-    // All possible moves of a knight
-    let X = [ 2, 1, -1, -2, -2, -1, 1, 2 ];
-    let Y = [ 1, 2, 2, 1, -1, -2, -2, -1 ];
+// Possible moves for the knight
+function knightMoves(x: number, y: number): [number, number][] {
+  const moves: [number, number][] = [];
+  const possibleMoves: [number, number][] = [
+    [-2, -1],
+    [-2, 1],
+    [-1, -2],
+    [-1, 2],
+    [1, -2],
+    [1, 2],
+    [2, -1],
+    [2, 1],
+  ];
 
-    let count = 0;
+  for (const move of possibleMoves) {
+    const newX = x + move[0];
+    const newY = y + move[1];
+    if (isValidMove(newX, newY)) {
+      moves.push([newX, newY]);
+    }
+  }
 
-    // Check if each possible move is valid or not
-    for (let i = 0; i < 8; i++) {
+  return moves;
+}
 
-        // Position of knight after move
-        let x = p + X[i];
-        let y = q + Y[i];
+// Find the shortest path from start to target
+function shortestPath(
+  start: [number, number],
+  target: [number, number]
+): [number, number][] | null {
+  const visited: boolean[][] = Array.from({ length: 8 }, () =>
+    Array(8).fill(false)
+  );
+  const queue: [number, number, number][] = []; // [x, y, distance]
 
-        // count valid moves
-        if (x >= 0 && y >= 0 && x < n && y < m && table[x][y] == 0)
-            count++;
-            table[x][y] = 1;
+  queue.push([...start, 0]);
+  visited[start[0]][start[1]] = true;
+
+  let count = 0;
+
+  while (queue.length > 0) {
+    const [currentX, currentY, distance] = queue.shift()!;
+
+    if (currentX === target[0] && currentY === target[1]) {
+      // Target reached, reconstruct the path
+      const path: [number, number][] = [];
+      let x = target[0];
+      let y = target[1];
+
+      for (let i = distance; i > 0; i--) {
+        path.unshift([x, y]);
+
+        for (const move of knightMoves(x, y)) {
+          const [nextX, nextY] = move;
+          count++;
+          if (
+            isValidMove(nextX, nextY) &&
+            visited[nextX][nextY] &&
+            visited[nextX][nextY] === true
+          ) {
+            x = nextX;
+            y = nextY;
+            break;
+          }
+        }
+      }
+      console.log('=> You made it in ' + count + ' moves!');
+      return path;
     }
 
-    // Return number of possible moves
-    return count;
+    for (const move of knightMoves(currentX, currentY)) {
+      const [nextX, nextY] = move;
+
+      if (!visited[nextX][nextY]) {
+        visited[nextX][nextY] = true;
+        queue.push([nextX, nextY, distance + 1]);
+      }
+    }
+  }
+
+  // No path found
+  return null;
 }
+
+/*
+This code uses Breadth-First Search to find the shortest path from a starting point to a target point on the chessboard. 
+The getKnightMoves function is used to get all possible moves for the knight. 
+The shortestPath function uses BFS to explore possible moves, keeping track of the distance from the starting point. 
+When the target is reached, it reconstructs the path from the target back to the starting point. 
+If no path is found, it returns null.
+*/

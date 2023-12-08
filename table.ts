@@ -9,19 +9,14 @@ for (let i = 0; i <= 7; i++) {
     table[i][j] = 0;
   }
 }
+  
+  const initialPosition = {row: 2, column: 3};
+  const finalPosition = {row: 7, column: 4};
 
-// Display the chessboard
-function displayChessBoard(board: any[][]): void {
-    for (let i = 0; i < board.length; i++) {
-      console.log(board[i].join(' '));
-    }
-  }
-
-  const initialPosition = {row: 2, column: 2};
-  const finalPosition = {row: 7, column: 2};
-
+  
   let firstKnight = createKnight(initialPosition, table);
   firstKnight.addKnight();
 
+  console.log('> knightMoves from ( '+[initialPosition.row, initialPosition.column]+' ) to ( '+ [finalPosition.row, finalPosition.column]+' )');
   firstKnight.moveKnight(initialPosition, finalPosition);
-  displayChessBoard(table);
+
